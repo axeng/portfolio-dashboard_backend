@@ -10,7 +10,7 @@ You can find this file in another repository gathering the back end and the fron
 ### 1.2 Development
 #### 1.2.1 Prerequisites
 ##### 1.2.1.1 Python
-This application uses Python 3, all the information needed to install it are there: https://wiki.python.org/moin/BeginnersGuide/Download.
+This application uses Python 3.8, all the information needed to install it are there: https://wiki.python.org/moin/BeginnersGuide/Download.
 
 ##### 1.2.1.2 Virtual Environment
 In order to run the application you need to set up a virtual environment, to do so run the following:
