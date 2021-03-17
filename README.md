@@ -1,5 +1,5 @@
 # Portfolio Dashboard - Back End
-This repository is par of the Portfolio Dashboard application.
+This repository is part of the Portfolio Dashboard application.
 It represents the API of the application used as a back end.
 
 ## 1 How to use the application
