@@ -24,6 +24,19 @@ To install the application dependencies run the following:
 .env/bin/pip install -r requirements.txt
 ```
 
+##### 1.2.1.4 Configuration
+Before launching the back end you need to fill the configuration file according to the needed setup.
+
+To do so you first need to copy the default configuration file:
+```shell
+cp env.sample .env.local
+```
+
+Then you can edit the `.env.local` file with your configuration.
+
+Optionally you may just add the configuration variable to the environment for the application to read them instead. 
+
+
 #### 1.2.2 Run the application
 To run the application you need to run the following command:
 ```shell
