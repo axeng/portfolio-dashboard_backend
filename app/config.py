@@ -1,10 +1,23 @@
 from pydantic import BaseSettings
 
 
-class Settings(BaseSettings):
-    keycloak_address: str
-    keycloak_realm: str
-    keycloak_client_id: str
+class KeycloakSettings(BaseSettings):
+    address: str
+    realm: str
+    client_id: str
 
     class Config:
-        env_file = ".env.local"
+        env_prefix = "PD_KEYCLOAK_"
+
+
+class CelerySettings(BaseSettings):
+    broker_address: str
+    backend_address: str
+
+    class Config:
+        env_prefix = "PD_CELERY_"
+
+
+class Settings(BaseSettings):
+    keycloak: KeycloakSettings = KeycloakSettings()
+    celery: CelerySettings = CelerySettings()

@@ -24,17 +24,24 @@ To install the application dependencies run the following:
 .env/bin/pip install -r requirements.txt
 ```
 
-##### 1.2.1.4 Configuration
-Before launching the back end you need to fill the configuration file according to the needed setup.
+##### 1.2.1.4 Environment Variables
+The following environment variables are needed to run the application:
 
-To do so you first need to copy the default configuration file:
+- `PD_KEYCLOAK_ADDRESS`: The keycloak address
+- `PD_KEYCLOAK_REALM`: The keycloak realm
+- `PD_KEYCLOAK_CLIENT_ID`: The id of the backend keycloak client
+- `PD_CELERY_BROKER_ADDRESS`: The address of the celery broker
+- `PD_CELERY_BACKEND_ADDRESS`: The address of the celery backend
+
+To add an env var you can add it to the `~/.profile` file this way:
 ```shell
-cp env.sample .env.local
+echo "export ENV_VAR_NAME=env_var_value" >> ~/.profile
 ```
 
-Then you can edit the `.env.local` file with your configuration.
-
-Optionally you may just add the configuration variable to the environment for the application to read them instead. 
+You can then load the `~/.profile` using this command if you do not want to restart your bash:
+```shell
+source ~/.profile
+```
 
 
 #### 1.2.2 Run the application
@@ -47,5 +54,5 @@ Then the application is accessible at this address: http://127.0.0.1:80000
 
 In order to run the Celery task queue you can run the following command (replace broker_address by the address of your broker):
 ```shell
-.env/bin/celery --app app.worker.main:app --broker broker_address worker --loglevel INFO
+.env/bin/celery --app app.worker.main:app --loglevel INFO
 ```

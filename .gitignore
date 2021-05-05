@@ -339,5 +339,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/vim,python,jetbrains,macos,linux,windows
 
-
-.env.*
+env_vars.sh
