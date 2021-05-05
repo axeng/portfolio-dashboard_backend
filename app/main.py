@@ -5,7 +5,6 @@ from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
 
 from app.auth import get_current_user
-from app.routers import external_apis
 
 app = FastAPI()
 
@@ -20,8 +19,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
-app.include_router(external_apis.router)
 
 
 # TODO delete
