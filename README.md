@@ -54,5 +54,5 @@ Then the application is accessible at this address: http://127.0.0.1:80000
 
 In order to run the Celery task queue you can run the following command (replace broker_address by the address of your broker):
 ```shell
-.env/bin/celery --app app.worker.main:app --loglevel INFO
+.env/bin/celery --app app.workers.main:app --loglevel INFO
 ```

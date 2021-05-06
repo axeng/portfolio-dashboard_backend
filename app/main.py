@@ -1,10 +1,11 @@
-from app.worker.main import app as celery_app
-from app.worker.tasks import test
+from app.external_apis import kraken
+from app.workers.main import app as celery_app
 
 from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
 
 from app.auth import get_current_user
+from app.workers.tasks.external_apis_fetch_data import external_apis_fetch_data
 
 app = FastAPI()
 
@@ -31,7 +32,7 @@ async def secure(current_user: dict = Depends(get_current_user)):
 # TODO delete
 @app.get("/")
 def root():
-    task = test.delay()
+    task = external_apis_fetch_data.delay(None, "transactions")
 
     return {"task_id": task.task_id}
 

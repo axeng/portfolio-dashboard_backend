@@ -9,10 +9,12 @@ def get_celery_settings():
     return config.Settings().celery
 
 
-app = Celery("app.worker",
+app = Celery("app.workers",
              broker=get_celery_settings().broker_address,
              backend=get_celery_settings().backend_address,
-             include=["app.worker.tasks"])
+             include=[
+                 "app.workers.tasks.external_apis_fetch_data"
+             ])
 
 app.conf.update(
     worker_concurrency=1
