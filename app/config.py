@@ -18,6 +18,20 @@ class CelerySettings(BaseSettings):
         env_prefix = "PD_CELERY_"
 
 
+class PostgresSettings(BaseSettings):
+    address: str
+    user: str
+    password: str
+    db: str
+
+    def get_postgres_url(self):
+        return f"postgresql://{self.user}:{self.password}@{self.address}/{self.db}"
+
+    class Config:
+        env_prefix = "PD_POSTGRES_"
+
+
 class Settings(BaseSettings):
     keycloak: KeycloakSettings = KeycloakSettings()
     celery: CelerySettings = CelerySettings()
+    postgres: PostgresSettings = PostgresSettings()
