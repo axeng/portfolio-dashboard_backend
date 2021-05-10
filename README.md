@@ -54,7 +54,7 @@ To run the application you need to run the following command:
 .venv/bin/uvicorn app.main:app --reload
 ```
 
-Then the application is accessible at this address: http://127.0.0.1:80000
+Then the application is accessible at this address: http://127.0.0.1:8000
 
 In order to run the Celery task queue you can run the following command (replace broker_address by the address of your broker):
 ```shell
