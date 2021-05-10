@@ -35,7 +35,7 @@ class Price(Base):
         nullable=False
     )
 
-    base_asset = relationship("Asset", foreign_keys=[base_asset_id], backref="prices")
-    target_asset = relationship("Asset", foreign_keys=[target_asset_id], backref="prices")
+    base_asset = relationship("Asset", foreign_keys=[base_asset_id], backref="prices_base")
+    target_asset = relationship("Asset", foreign_keys=[target_asset_id], backref="prices_target")
 
     UniqueConstraint("timestamp", "base_asset_id", "target_asset_id")

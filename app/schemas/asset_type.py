@@ -6,6 +6,7 @@ class AssetTypeBase(BaseModel):
 
 
 class AssetTypeCreate(AssetTypeBase):
+    name: str
     pass
 
 
@@ -15,6 +16,7 @@ class AssetTypeUpdate(AssetTypeBase):
 
 class AssetTypeInDBBase(AssetTypeBase):
     id: int
+    name: str
 
     class Config:
         orm_mode = True

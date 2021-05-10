@@ -36,8 +36,7 @@ class Account(Base):
 
     user = relationship("User", back_populates="accounts")
     platform = relationship("Platform", back_populates="accounts")
-    parent_account = relationship("Account", back_populates="child_accounts")
+    parent_account = relationship("Account", backref="child_accounts", remote_side="Account.id")
 
     transactions = relationship("Transaction", back_populates="account")
-    child_accounts = relationship("Account", back_populates="parent_account")
     external_apis = relationship("ExternalAPI", back_populates="account")

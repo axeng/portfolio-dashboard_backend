@@ -43,9 +43,12 @@ class Asset(Base):
 
     asset_type = relationship("AssetType", back_populates="assets")
     platform = relationship("Platform", back_populates="assets")
-    parent_asset = relationship("Asset", back_populates="child_accounts")
+    parent_asset = relationship("Asset", backref="child_accounts", remote_side="Asset.id")
 
     transactions = relationship("Transaction", back_populates="asset")
-    child_assets = relationship("Asset", back_populates="parent_asset")
+
+    @property
+    def matches(self):
+        return self.prices_base + self.prices_target
 
     UniqueConstraint("platform_id", "platform_asset_id")

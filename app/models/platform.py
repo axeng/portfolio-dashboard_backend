@@ -13,10 +13,15 @@ class Platform(Base):
         index=True
     )
 
-    display_name = Column(
+    name = Column(
         String(length=64),
         nullable=False,
         unique=True
+    )
+
+    display_name = Column(
+        String(length=64),
+        nullable=False
     )
 
     accounts = relationship("Account", back_populates="platform")

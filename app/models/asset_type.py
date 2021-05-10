@@ -13,10 +13,15 @@ class AssetType(Base):
         index=True
     )
 
-    display_name = Column(
+    name = Column(
         String(length=64),
         nullable=False,
         unique=True
+    )
+
+    display_name = Column(
+        String(length=64),
+        nullable=False
     )
 
     assets = relationship("Asset", back_populates="asset_type")

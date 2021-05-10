@@ -2,11 +2,11 @@ from pydantic import BaseModel
 
 
 class UserBase(BaseModel):
-    keycloak_user_id: str
+    pass
 
 
 class UserCreate(UserBase):
-    pass
+    keycloak_user_id: str
 
 
 class UserUpdate(UserBase):
@@ -15,6 +15,7 @@ class UserUpdate(UserBase):
 
 class UserInDBBase(UserBase):
     id: int
+    keycloak_user_id: str
 
     class Config:
         orm_mode = True

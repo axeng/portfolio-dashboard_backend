@@ -13,10 +13,15 @@ class TransactionType(Base):
         index=True
     )
 
-    display_name = Column(
+    name = Column(
         String(length=64),
         nullable=False,
         unique=True
+    )
+
+    display_name = Column(
+        String(length=64),
+        nullable=False,
     )
 
     transactions = relationship("Transaction", back_populates="transaction_type")

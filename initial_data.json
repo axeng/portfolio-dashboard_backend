@@ -1,0 +1,32 @@
+{
+    "asset_types": [
+        {
+            "name": "fiat",
+            "display_name": "Fiat Currency"
+        },
+        {
+            "name": "cryptocurrency",
+            "display_name": "Cryptocurrency"
+        }
+    ],
+    "platforms": [
+        {
+            "name": "kraken",
+            "display_name": "Kraken"
+        }
+    ],
+    "transaction_types": [
+        {
+            "name": "trade",
+            "display_name": "Trade"
+        },
+        {
+            "name": "deposit",
+            "display_name": "Deposit"
+        },
+        {
+            "name": "withdrawal",
+            "display_name": "Withdrawal"
+        }
+    ]
+}

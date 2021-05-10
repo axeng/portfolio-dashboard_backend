@@ -6,6 +6,7 @@ class TransactionTypeBase(BaseModel):
 
 
 class TransactionTypeCreate(TransactionTypeBase):
+    name: str
     pass
 
 
@@ -15,6 +16,7 @@ class TransactionTypeUpdate(TransactionTypeBase):
 
 class TransactionTypeInDBBase(TransactionTypeBase):
     id: int
+    name: str
 
     class Config:
         orm_mode = True
