@@ -1,9 +1,10 @@
-from app import models, schemas
 from app.crud.commons import CRUDBase
+from app.models import Transaction
+from app.schemas import TransactionCreate, TransactionUpdate
 
 
-class CRUDTransaction(CRUDBase[models.Transaction, schemas.TransactionCreate, schemas.TransactionUpdate]):
+class CRUDTransaction(CRUDBase[Transaction, TransactionCreate, TransactionUpdate]):
     pass
 
 
-transaction = CRUDTransaction(models.Transaction)
+transaction = CRUDTransaction(Transaction)
