@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from app.database import Base
+from app.models.commons import same_as
 
 
 class Platform(Base):
@@ -21,7 +22,8 @@ class Platform(Base):
 
     display_name = Column(
         String(length=64),
-        nullable=False
+        nullable=False,
+        default=same_as("name")
     )
 
     accounts = relationship("Account", back_populates="platform")

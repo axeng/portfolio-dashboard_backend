@@ -14,6 +14,13 @@ class Asset(Base):
         index=True
     )
 
+    code = Column(
+        String(length=64),
+        nullable=False,
+        unique=True,
+        default=same_as("platform_asset_id")
+    )
+
     asset_type_id = Column(
         Integer,
         ForeignKey("asset_types.id"),
@@ -33,12 +40,6 @@ class Asset(Base):
     parent_asset_id = Column(
         Integer,
         ForeignKey("assets.id")
-    )
-
-    display_name = Column(
-        String(length=64),
-        nullable=False,
-        default=same_as("platform_asset_id")
     )
 
     asset_type = relationship("AssetType", back_populates="assets")

@@ -28,5 +28,11 @@
             "name": "withdrawal",
             "display_name": "Withdrawal"
         }
+    ],
+    "assets": [
+        {
+            "code": "EUR",
+            "asset_type_name": "fiat"
+        }
     ]
 }

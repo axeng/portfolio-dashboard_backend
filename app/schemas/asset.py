@@ -8,11 +8,10 @@ class AssetBase(BaseModel):
     platform_id: Optional[int]
     platform_asset_id: Optional[str]
     parent_asset_id: Optional[int]
-    display_name: str
 
 
 class AssetCreate(AssetBase):
-    pass
+    code: str
 
 
 class AssetUpdate(AssetBase):
@@ -21,6 +20,7 @@ class AssetUpdate(AssetBase):
 
 class AssetInDBBase(AssetBase):
     id: int
+    code: str
 
     class Config:
         orm_mode = True

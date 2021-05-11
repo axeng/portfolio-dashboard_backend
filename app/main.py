@@ -60,8 +60,21 @@ async def transaction_type_list(db: Session = Depends(get_db)):
 
 
 # TODO delete
+@app.get("/asset_list", response_model=List[schemas.Asset])
+async def asset_list(db: Session = Depends(get_db)):
+    assets = crud.asset.get_multi(db)
+    return assets
+
+
+# TODO delete
 @app.get("/")
 def root():
+    return {"test": "ok"}
+
+
+# TODO delete
+@app.get("/run_task")
+def run_task():
     task = external_apis_fetch_data.delay(None, "transactions")
 
     return {"task_id": task.task_id}
