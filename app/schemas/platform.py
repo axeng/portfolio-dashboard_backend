@@ -7,7 +7,6 @@ class PlatformBase(BaseModel):
 
 class PlatformCreate(PlatformBase):
     name: str
-    pass
 
 
 class PlatformUpdate(PlatformBase):
@@ -16,7 +15,6 @@ class PlatformUpdate(PlatformBase):
 
 class PlatformInDBBase(PlatformBase):
     id: int
-    name: str
 
     class Config:
         orm_mode = True
@@ -27,4 +25,4 @@ class Platform(PlatformInDBBase):
 
 
 class PlatformInDB(PlatformInDBBase):
-    pass
+    name: str

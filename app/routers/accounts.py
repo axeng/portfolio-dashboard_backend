@@ -1,12 +1,11 @@
 from typing import List, Dict
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 
 from sqlalchemy.orm import Session
 
-from app.dependencies.account import get_account
 from app.dependencies.auth import get_user
-from app.dependencies.database import get_db, get_read_multi_parameters
+from app.dependencies.database import get_db, get_read_multi_parameters, get_account
 from app.schemas import Account, AccountCreate, User, AccountUpdate
 from app import crud
 
