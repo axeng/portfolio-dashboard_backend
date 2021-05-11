@@ -2,7 +2,7 @@ from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, Query
 
 from app.database import Base
 
@@ -27,9 +27,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def create(self,
                db: Session,
-               obj_in: CreateSchemaType) -> ModelType:
+               obj_in: CreateSchemaType,
+               **kwargs) -> ModelType:
         obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in_data)
+        db_obj = self.model(**obj_in_data, **kwargs)
 
         db.add(db_obj)
         db.commit()
@@ -58,7 +59,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
     def remove(self, db: Session, id: int) -> ModelType:
         obj = db.query(self.model).get(id)
+        return self.remove_obj(db, obj)
 
+    def remove_obj(self, db: Session, obj: Query) -> ModelType:
         db.delete(obj)
         db.commit()
         return obj

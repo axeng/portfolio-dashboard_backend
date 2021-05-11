@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 class CRUDPlatform(CRUDBase[Platform, PlatformCreate, PlatformUpdate]):
     def get_by_name(self, db: Session, name: str) -> Optional[Platform]:
-        return db.query(Platform).filter(Platform.name == name).first()
+        return db.query(self.model).filter(self.model.name == name).first()
 
 
 platform = CRUDPlatform(Platform)

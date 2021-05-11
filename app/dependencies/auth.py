@@ -1,24 +1,11 @@
-from typing import Optional
-
-from app import auth, crud
-from app.database import SessionLocal
 from fastapi import HTTPException, status, Depends
-
+from app import auth, crud
+from app.dependencies.database import get_db
+from app.schemas import UserCreate, User
 from sqlalchemy.orm import Session
 
-from app.schemas import UserCreate, User
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-async def get_current_user(token: str = Depends(auth.oauth2_scheme), db: Session = Depends(get_db)) \
-        -> Optional[User]:
+async def get_user(token: str = Depends(auth.oauth2_scheme), db: Session = Depends(get_db)) -> User:
     try:
         KEYCLOAK_PUBLIC_KEY = (
                 "-----BEGIN PUBLIC KEY-----\n"

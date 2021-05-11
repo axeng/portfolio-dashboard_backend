@@ -34,6 +34,10 @@ class Account(Base):
         nullable=False
     )
 
+    additional_data = Column(
+        String
+    )
+
     user = relationship("User", back_populates="accounts")
     platform = relationship("Platform", back_populates="accounts")
     parent_account = relationship("Account", backref="child_accounts", remote_side="Account.id")

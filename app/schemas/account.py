@@ -4,14 +4,13 @@ from pydantic import BaseModel
 
 
 class AccountBase(BaseModel):
-    user_id: int
-    platform_id: Optional[int]
     parent_account_id: Optional[int]
     display_name: str
+    additional_data: Optional[str]
 
 
 class AccountCreate(AccountBase):
-    pass
+    platform_id: Optional[int]
 
 
 class AccountUpdate(AccountBase):
@@ -20,6 +19,7 @@ class AccountUpdate(AccountBase):
 
 class AccountInDBBase(AccountBase):
     id: int
+    platform_id: Optional[int]
 
     class Config:
         orm_mode = True
@@ -30,4 +30,4 @@ class Account(AccountInDBBase):
 
 
 class AccountInDB(AccountInDBBase):
-    pass
+    user_id: int

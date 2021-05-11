@@ -3,14 +3,12 @@ from typing import Optional
 
 
 class ExternalAPIBase(BaseModel):
-    account_id: int
-    authentication_data: Optional[str]
-    additional_data: Optional[str]
     display_name: str
 
 
 class ExternalAPICreate(ExternalAPIBase):
-    pass
+    authentication_data: Optional[str]
+    account_id: int
 
 
 class ExternalAPIUpdate(ExternalAPIBase):
@@ -19,6 +17,7 @@ class ExternalAPIUpdate(ExternalAPIBase):
 
 class ExternalAPIInDBBase(ExternalAPIBase):
     id: int
+    account_id: int
 
     class Config:
         orm_mode = True
@@ -29,4 +28,4 @@ class ExternalAPI(ExternalAPIInDBBase):
 
 
 class ExternalAPIInDB(ExternalAPIInDBBase):
-    pass
+    authentication_data: Optional[str]

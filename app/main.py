@@ -1,7 +1,9 @@
 from typing import List
 
 from app import crud, schemas
-from app.dependencies import get_current_user, get_db
+from app.dependencies.auth import get_user
+from app.dependencies.database import get_db
+from app.routers import api_router
 from app.workers.main import app as celery_app
 
 from fastapi import FastAPI, Depends
@@ -24,10 +26,12 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+app.include_router(api_router)
+
 
 # TODO delete
 @app.get("/secure")
-async def secure(current_user: dict = Depends(get_current_user)):
+async def secure(user: dict = Depends(get_user)):
     return {"Bravo": "Congrats"}
 
 
@@ -68,13 +72,13 @@ async def asset_list(db: Session = Depends(get_db)):
 
 # TODO delete
 @app.get("/")
-def root():
+async def root():
     return {"test": "ok"}
 
 
 # TODO delete
 @app.get("/run_task")
-def run_task():
+async def run_task():
     task = external_apis_fetch_data.delay(None, "transactions")
 
     return {"task_id": task.task_id}
@@ -82,6 +86,6 @@ def run_task():
 
 # TODO delete
 @app.get("/task/{task_id}")
-def task_status(task_id):
+async def task_status(task_id):
     res = celery_app.AsyncResult(task_id)
     return {"status": res.ready()}

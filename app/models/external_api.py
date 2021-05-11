@@ -24,10 +24,6 @@ class ExternalAPI(Base):
         nullable=False
     )
 
-    additional_data = Column(
-        String
-    )
-
     display_name = Column(
         String(length=64),
         nullable=False
