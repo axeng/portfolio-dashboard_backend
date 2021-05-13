@@ -1,13 +1,16 @@
 from typing import List, Dict
 
 from sqlalchemy.orm import Session
-
+import importlib
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.dependencies.auth import get_user
 from app.dependencies.database import get_db, get_read_multi_parameters, get_account, get_external_api
+from app.external_apis import platform_to_module
 from app.schemas import ExternalAPI, ExternalAPICreate, User, ExternalAPIUpdate
 from app import crud
+from app.external_apis.commons import DataTypeEnum
+from app.workers.tasks.external_apis_fetch_data import external_apis_fetch_data
 
 router = APIRouter(
     prefix="/external-apis"
@@ -30,7 +33,7 @@ async def create_external_api(external_api_in: ExternalAPICreate,
 
     if account.platform_id is None:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="The account is not linked to any platform"
         )
 
@@ -53,3 +56,28 @@ async def read_external_api(external_api: ExternalAPI = Depends(get_external_api
 async def delete_external_api(external_api: ExternalAPI = Depends(get_external_api),
                               db: Session = Depends(get_db)):
     return crud.external_api.remove_obj(db, external_api)
+
+
+@router.post("/{external_api_id}/fetch_data/{data_type}")
+async def fetch_data(data_type: DataTypeEnum,
+                     external_api: ExternalAPI = Depends(get_external_api)):
+    account = external_api.account
+
+    if account.platform_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="The account is not linked to any platform"
+        )
+
+    external_api_module_name = platform_to_module[external_api.account.platform.name]
+    external_api_module = importlib.import_module("app.external_apis." + external_api_module_name)
+
+    if data_type not in external_api_module.supported_data_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="The data type is not available for this platform"
+        )
+
+    task = external_apis_fetch_data.delay(external_api.id, data_type.value)
+
+    return {"task_id": task.task_id}

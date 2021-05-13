@@ -5,9 +5,8 @@ from fastapi import Depends, HTTPException, status
 
 from sqlalchemy.orm import Session
 
-from app import crud
+from app import crud, models, schemas
 from app.dependencies.auth import get_user
-from app.schemas import User, Account, ExternalAPI
 
 
 async def get_db():
@@ -28,7 +27,7 @@ async def get_read_multi_parameters(skip: int = 0,
 
 def get_account(account_id: int,
                 db: Session = Depends(get_db),
-                user: User = Depends(get_user)) -> Account:
+                user: schemas.User = Depends(get_user)) -> models.Account:
     account = crud.account.get(db, account_id)
 
     if account is None:
@@ -48,7 +47,7 @@ def get_account(account_id: int,
 
 async def get_external_api(external_api_id: int,
                            db: Session = Depends(get_db),
-                           user: User = Depends(get_user)) -> ExternalAPI:
+                           user: schemas.User = Depends(get_user)) -> models.ExternalAPI:
     external_api = crud.external_api.get(db, external_api_id)
 
     if external_api is None:
@@ -67,7 +66,7 @@ async def get_external_api(external_api_id: int,
 
 
 async def get_platform(platform_id: int,
-                       db: Session = Depends(get_db)):
+                       db: Session = Depends(get_db)) -> models.Platform:
     platform = crud.platform.get(db, platform_id)
 
     if platform is None:

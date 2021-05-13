@@ -1,12 +1,14 @@
-from enum import Enum
+from enum import Enum, unique
 
 from pydantic.main import BaseModel
 
 
+@unique
 class DataTypeEnum(str, Enum):
     transactions = "transactions"
 
 
+@unique
 class RequestMethodEnum(str, Enum):
     post = "POST"
     get = "GET"
@@ -15,6 +17,7 @@ class RequestMethodEnum(str, Enum):
 class Endpoint(BaseModel):
     uri_path: str
     method: RequestMethodEnum
+    requires_auth: bool
 
 
 class Request(BaseModel):
