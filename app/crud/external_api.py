@@ -1,5 +1,5 @@
 from app.crud.commons import CRUDBase
-from app.models import ExternalAPI
+from app.models import ExternalAPI, Account
 from app.schemas import ExternalAPICreate, ExternalAPIUpdate
 
 from sqlalchemy.orm import Session
@@ -12,7 +12,7 @@ class CRUDExternalAPI(CRUDBase[ExternalAPI, ExternalAPICreate, ExternalAPIUpdate
                           account_id: int = None,
                           skip: int = 0,
                           limit: int = 100):
-        query = db.query(self.model).filter(self.model.account.user_id == user_id)
+        query = db.query(self.model).join(Account).filter(Account.user_id == user_id)
 
         if account_id is not None:
             query = query.filter(self.model.account_id == account_id)

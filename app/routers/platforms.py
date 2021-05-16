@@ -2,14 +2,15 @@ from typing import List, Dict
 
 from fastapi import APIRouter, Depends
 
-from app.dependencies.database import get_db, get_read_multi_parameters, get_platform
+from app.dependencies.database import get_db, get_read_multi_parameters
+from app.dependencies.platform import get_platform
 from app.schemas import Platform
 from app import crud
 
 from sqlalchemy.orm import Session
 
 router = APIRouter(
-    prefix="/accounts"
+    prefix="/platforms"
 )
 
 
@@ -19,6 +20,6 @@ async def read_platforms(read_parameters: Dict = Depends(get_read_multi_paramete
     return crud.platform.get_multi(db, **read_parameters)
 
 
-@router.get("/{platform_id}", response_model=Platform)
+@router.get("/{platform_id}/", response_model=Platform)
 async def read_platform(platform: Platform = Depends(get_platform)):
     return platform

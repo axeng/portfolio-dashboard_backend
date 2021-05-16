@@ -4,8 +4,9 @@ from fastapi import APIRouter, Depends
 
 from sqlalchemy.orm import Session
 
+from app.dependencies.account import get_account
 from app.dependencies.auth import get_user
-from app.dependencies.database import get_db, get_read_multi_parameters, get_account
+from app.dependencies.database import get_db, get_read_multi_parameters
 from app.schemas import Account, AccountCreate, User, AccountUpdate
 from app import crud
 
@@ -31,19 +32,19 @@ async def create_account(account_in: AccountCreate,
     return crud.account.create(db, account_in, user_id=user.id)
 
 
-@router.put("/{account_id}", response_model=Account)
+@router.put("/{account_id}/", response_model=Account)
 async def update_account(account_in: AccountUpdate,
                          account: Account = Depends(get_account),
                          db: Session = Depends(get_db)):
     return crud.account.update(db, account, account_in)
 
 
-@router.get("/{account_id}", response_model=Account)
+@router.get("/{account_id}/", response_model=Account)
 async def read_account(account: Account = Depends(get_account)):
     return account
 
 
-@router.delete("/{account_id}", response_model=Account)
+@router.delete("/{account_id}/", response_model=Account)
 async def delete_account(account: Account = Depends(get_account),
                          db: Session = Depends(get_db)):
     return crud.account.remove_obj(db, account)

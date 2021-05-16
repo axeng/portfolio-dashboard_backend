@@ -4,8 +4,10 @@ from sqlalchemy.orm import Session
 import importlib
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from app.dependencies.account import get_account
 from app.dependencies.auth import get_user
-from app.dependencies.database import get_db, get_read_multi_parameters, get_account, get_external_api
+from app.dependencies.database import get_db, get_read_multi_parameters
+from app.dependencies.external_api import get_external_api
 from app.external_apis import platform_to_module
 from app.schemas import ExternalAPI, ExternalAPICreate, User, ExternalAPIUpdate
 from app import crud
@@ -40,25 +42,25 @@ async def create_external_api(external_api_in: ExternalAPICreate,
     return crud.external_api.create(db, external_api_in)
 
 
-@router.put("/{external_api_id}", response_model=ExternalAPI)
+@router.put("/{external_api_id}/", response_model=ExternalAPI)
 async def update_external_api(external_api_in: ExternalAPIUpdate,
                               external_api: ExternalAPI = Depends(get_external_api),
                               db: Session = Depends(get_db)):
     return crud.external_api.update(db, external_api, external_api_in)
 
 
-@router.get("/{external_api_id}", response_model=ExternalAPI)
+@router.get("/{external_api_id}/", response_model=ExternalAPI)
 async def read_external_api(external_api: ExternalAPI = Depends(get_external_api)):
     return external_api
 
 
-@router.delete("/{external_api_id}", response_model=ExternalAPI)
+@router.delete("/{external_api_id}/", response_model=ExternalAPI)
 async def delete_external_api(external_api: ExternalAPI = Depends(get_external_api),
                               db: Session = Depends(get_db)):
     return crud.external_api.remove_obj(db, external_api)
 
 
-@router.post("/{external_api_id}/fetch_data/{data_type}")
+@router.post("/{external_api_id}/fetch_data/{data_type}/")
 async def fetch_data(data_type: DataTypeEnum,
                      external_api: ExternalAPI = Depends(get_external_api)):
     account = external_api.account
