@@ -20,6 +20,21 @@ def model_list_to_dict(model_list: List[ModelType]) -> Dict[int, ModelType]:
     return model_dict
 
 
+def multi_query(query,
+                skip: int = 0,
+                limit: int = 100,
+                as_dict: bool = False) -> Union[List[ModelType], Dict[int, ModelType]]:
+    query = query.offset(skip)
+    if limit >= 0:
+        query = query.limit(limit)
+
+    result = query.all()
+
+    if as_dict:
+        return model_list_to_dict(result)
+    return result
+
+
 # Source: https://github.com/tiangolo/full-stack-fastapi-postgresql/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/backend/app/app/crud/base.py
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
@@ -33,11 +48,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                   skip: int = 0,
                   limit: int = 100,
                   as_dict: bool = False) -> Union[List[ModelType], Dict[int, ModelType]]:
-        result = db.query(self.model).offset(skip).limit(limit).all()
-
-        if as_dict:
-            return model_list_to_dict(result)
-        return result
+        query = db.query(self.model)
+        return multi_query(query, skip=skip, limit=limit, as_dict=as_dict)
 
     def create(self,
                db: Session,

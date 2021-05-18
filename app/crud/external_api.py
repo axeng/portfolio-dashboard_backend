@@ -1,6 +1,6 @@
 from typing import Union, List, Dict
 
-from app.crud.base import CRUDBase, model_list_to_dict
+from app.crud.base import CRUDBase, multi_query
 from app.models import ExternalAPI, Account
 from app.schemas import ExternalAPICreate, ExternalAPIUpdate
 
@@ -14,11 +14,8 @@ class CRUDExternalAPI(CRUDBase[ExternalAPI, ExternalAPICreate, ExternalAPIUpdate
                           skip: int = 0,
                           limit: int = 100,
                           as_dict: bool = False) -> Union[List[ExternalAPI], Dict[int, ExternalAPI]]:
-        result = db.query(self.model).join(Account).filter(Account.user_id == user_id).offset(skip).limit(limit).all()
-
-        if as_dict:
-            return model_list_to_dict(result)
-        return result
+        query = db.query(self.model).join(Account).filter(Account.user_id == user_id)
+        return multi_query(query, skip=skip, limit=limit, as_dict=as_dict)
 
 
 external_api = CRUDExternalAPI(ExternalAPI)
