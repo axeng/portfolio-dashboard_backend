@@ -9,7 +9,7 @@ from typing import Optional
 from pydantic.main import BaseModel
 from pydantic.types import PositiveInt
 
-from app.external_apis import commons
+from app.platforms import commons
 from app.schemas import ExternalAPIInDB
 
 supported_data_types = {

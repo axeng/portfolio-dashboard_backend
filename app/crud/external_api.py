@@ -1,4 +1,6 @@
-from app.crud.commons import CRUDBase
+from typing import Union, List, Dict
+
+from app.crud.commons import CRUDBase, model_list_to_dict
 from app.models import ExternalAPI, Account
 from app.schemas import ExternalAPICreate, ExternalAPIUpdate
 
@@ -9,15 +11,14 @@ class CRUDExternalAPI(CRUDBase[ExternalAPI, ExternalAPICreate, ExternalAPIUpdate
     def get_multi_by_user(self,
                           db: Session,
                           user_id: int,
-                          account_id: int = None,
                           skip: int = 0,
-                          limit: int = 100):
-        query = db.query(self.model).join(Account).filter(Account.user_id == user_id)
+                          limit: int = 100,
+                          as_dict: bool = False) -> Union[List[ExternalAPI], Dict[int, ExternalAPI]]:
+        result = db.query(self.model).join(Account).filter(Account.user_id == user_id).offset(skip).limit(limit).all()
 
-        if account_id is not None:
-            query = query.filter(self.model.account_id == account_id)
-
-        return query.offset(skip).limit(limit).all()
+        if as_dict:
+            return model_list_to_dict(result)
+        return result
 
 
 external_api = CRUDExternalAPI(ExternalAPI)

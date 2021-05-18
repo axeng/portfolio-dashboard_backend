@@ -1,17 +1,18 @@
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from sqlalchemy.orm import Session
-import importlib
+
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.dependencies.account import get_account
 from app.dependencies.auth import get_user
-from app.dependencies.database import get_db, get_read_multi_parameters
+from app.dependencies.database import get_db, get_read_multi_parameters_dict
 from app.dependencies.external_api import get_external_api
-from app.external_apis import platform_to_module
+
+from app.platforms.commons import get_platform_module
 from app.schemas import ExternalAPI, ExternalAPICreate, User, ExternalAPIUpdate
 from app import crud
-from app.external_apis.commons import DataTypeEnum
+from app.platforms.commons import DataTypeEnum
 from app.workers.tasks.external_apis_fetch_data import external_apis_fetch_data
 
 router = APIRouter(
@@ -19,25 +20,19 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[ExternalAPI])
-async def read_external_apis(account_id: int = None,
-                             read_parameters: Dict = Depends(get_read_multi_parameters),
+@router.get("/", response_model=Union[List[ExternalAPI], Dict[str, ExternalAPI]])
+async def read_external_apis(read_parameters: Dict = Depends(get_read_multi_parameters_dict),
                              db: Session = Depends(get_db),
                              user: User = Depends(get_user)):
-    return crud.external_api.get_multi_by_user(db, user.id, account_id, **read_parameters)
+    return crud.external_api.get_multi_by_user(db, user.id, **read_parameters)
 
 
 @router.post("/", response_model=ExternalAPI)
 async def create_external_api(external_api_in: ExternalAPICreate,
                               db: Session = Depends(get_db),
                               user: User = Depends(get_user)):
-    account = get_account(external_api_in.account_id, db, user)
-
-    if account.platform_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The account is not linked to any platform"
-        )
+    # Check that the account is owned by the user
+    await get_account(external_api_in.account_id, db, user)
 
     return crud.external_api.create(db, external_api_in)
 
@@ -63,18 +58,9 @@ async def delete_external_api(external_api: ExternalAPI = Depends(get_external_a
 @router.post("/{external_api_id}/fetch_data/{data_type}/")
 async def fetch_data(data_type: DataTypeEnum,
                      external_api: ExternalAPI = Depends(get_external_api)):
-    account = external_api.account
+    platform_module = get_platform_module(external_api.account.platform.name)
 
-    if account.platform_id is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The account is not linked to any platform"
-        )
-
-    external_api_module_name = platform_to_module[external_api.account.platform.name]
-    external_api_module = importlib.import_module("app.external_apis." + external_api_module_name)
-
-    if data_type not in external_api_module.supported_data_types:
+    if data_type not in platform_module.supported_data_types:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="The data type is not available for this platform"

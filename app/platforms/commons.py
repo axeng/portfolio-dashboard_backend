@@ -2,6 +2,10 @@ from enum import Enum, unique
 
 from pydantic.main import BaseModel
 
+import importlib
+
+from app.platforms import platform_to_module
+
 
 @unique
 class DataTypeEnum(str, Enum):
@@ -35,3 +39,10 @@ def construct_request(endpoint: Endpoint, api_url: str, **kwargs) -> Request:
         method=endpoint.method,
         **kwargs
     )
+
+
+def get_platform_module(platform_name: str):
+    module_name = platform_to_module[platform_name]
+    module = importlib.import_module(f"app.platforms.{module_name}")
+
+    return module

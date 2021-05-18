@@ -6,7 +6,7 @@ from app.dependencies.auth import get_user
 from app.dependencies.database import get_db
 
 
-def get_account(account_id: int,
+async def get_account(account_id: int,
                 db: Session = Depends(get_db),
                 user: schemas.User = Depends(get_user)) -> models.Account:
     account = crud.account.get(db, account_id)

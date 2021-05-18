@@ -11,6 +11,15 @@ CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
 
+def model_list_to_dict(model_list: List[ModelType]) -> Dict[int, ModelType]:
+    model_dict = {}
+
+    for model in model_list:
+        model_dict[model.id] = model
+
+    return model_dict
+
+
 # Source: https://github.com/tiangolo/full-stack-fastapi-postgresql/blob/master/%7B%7Bcookiecutter.project_slug%7D%7D/backend/app/app/crud/base.py
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
@@ -22,8 +31,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def get_multi(self,
                   db: Session,
                   skip: int = 0,
-                  limit: int = 100) -> List[ModelType]:
-        return db.query(self.model).offset(skip).limit(limit).all()
+                  limit: int = 100,
+                  as_dict: bool = False) -> Union[List[ModelType], Dict[int, ModelType]]:
+        result = db.query(self.model).offset(skip).limit(limit).all()
+
+        if as_dict:
+            return model_list_to_dict(result)
+        return result
 
     def create(self,
                db: Session,
