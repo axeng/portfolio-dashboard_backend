@@ -1,6 +1,6 @@
 from typing import Optional
 
-from app.crud.commons import CRUDBase
+from app.crud.base import CRUDBase
 from app.models import Platform
 from app.schemas import PlatformCreate, PlatformUpdate
 

@@ -40,7 +40,9 @@ class AccountCreate(AccountBase):
 
             platform_module.AdditionalData.parse_raw(v)
 
-        return v
+            return v
+
+        return None
 
 
 class AccountUpdate(AccountBase):

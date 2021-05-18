@@ -1,6 +1,6 @@
 from typing import Dict, Union, List
 
-from app.crud.commons import CRUDBase, model_list_to_dict
+from app.crud.base import CRUDBase, model_list_to_dict
 from app.models import Account
 from app.schemas import AccountCreate, AccountUpdate
 
