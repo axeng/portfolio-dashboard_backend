@@ -5,7 +5,6 @@ from pydantic.class_validators import validator
 
 from app.database import SessionLocal
 from app import crud
-from app.platforms.commons import get_platform_module
 
 
 class AccountBase(BaseModel):
@@ -29,6 +28,8 @@ class AccountCreate(AccountBase):
 
     @validator("additional_data", always=True)
     def valid_additional_data(cls, v, values, **kwargs):
+        from app.platforms import platform_to_module
+
         if values["platform_id"] is not None:
             if v is None:
                 raise ValueError("Additional data must be provided")
@@ -36,9 +37,9 @@ class AccountCreate(AccountBase):
             db = SessionLocal()
 
             platform = crud.platform.get(db, values["platform_id"])
-            platform_module = get_platform_module(platform.name)
+            platform_module = platform_to_module[platform.name]
 
-            platform_module.AdditionalData.parse_raw(v)
+            platform_module.additional_data_model.parse_raw(v)
 
             return v
 

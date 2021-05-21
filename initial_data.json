@@ -27,11 +27,20 @@
         {
             "name": "withdrawal",
             "display_name": "Withdrawal"
+        },
+        {
+            "name": "fee",
+            "display_name": "Fee"
+        },
+        {
+            "name": "stacking",
+            "display_name": "Stacking"
         }
     ],
     "assets": [
         {
             "code": "EUR",
+            "display_name": "EUR",
             "asset_type_name": "fiat"
         }
     ]

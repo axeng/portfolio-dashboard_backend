@@ -16,9 +16,7 @@ class Asset(Base):
 
     code = Column(
         String(length=64),
-        nullable=False,
-        unique=True,
-        default=same_as("platform_asset_id")
+        nullable=False
     )
 
     asset_type_id = Column(
@@ -32,14 +30,15 @@ class Asset(Base):
         ForeignKey("platforms.id")
     )
 
-    platform_asset_id = Column(
-        String(length=64),
-        unique=True
-    )
-
     parent_asset_id = Column(
         Integer,
         ForeignKey("assets.id")
+    )
+
+    display_name = Column(
+        String(length=64),
+        nullable=False,
+        default=same_as("code")
     )
 
     asset_type = relationship("AssetType", back_populates="assets")
@@ -49,7 +48,7 @@ class Asset(Base):
     transactions = relationship("Transaction", back_populates="asset")
 
     @property
-    def matches(self):
+    def prices(self):
         return self.prices_base + self.prices_target
 
-    UniqueConstraint("platform_id", "platform_asset_id")
+    UniqueConstraint("code", "platform_id")

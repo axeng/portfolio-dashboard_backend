@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.dependencies.database import get_db, get_read_multi_parameters, get_read_multi_parameters_dict
 from app.dependencies.platform import get_platform
-from app.platforms.commons import get_platform_module
+from app.platforms import platform_to_module
 from app.schemas import Platform, PlatformInDB
 from app import crud
 
@@ -28,7 +28,7 @@ async def read_additional_data_schemas(read_parameters: Dict = Depends(get_read_
     platform_schemas = {}
 
     for platform in platform_list:
-        platform_schemas[platform.id] = get_platform_module(platform.name).AdditionalData.schema()
+        platform_schemas[platform.id] = platform_to_module[platform.name].additional_data_model.schema()
 
     return platform_schemas
 
@@ -40,7 +40,7 @@ async def read_authentication_data_schemas(read_parameters: Dict = Depends(get_r
     platform_schemas = {}
 
     for platform in platform_list:
-        platform_schemas[platform.id] = get_platform_module(platform.name).AuthenticationData.schema()
+        platform_schemas[platform.id] = platform_to_module[platform.name].authentication_data_model.schema()
 
     return platform_schemas
 
@@ -52,9 +52,9 @@ async def read_platform(platform: Platform = Depends(get_platform)):
 
 @router.get("/{platform_id}/schemas/additional-data/", response_model=Dict)
 async def read_additional_data_schema(platform: PlatformInDB = Depends(get_platform)):
-    return get_platform_module(platform.name).AdditionalData.schema()
+    return platform_to_module[platform.name].additional_data_model.schema()
 
 
 @router.get("/{platform_id}/schemas/authentication-data/", response_model=Dict)
 async def read_authentication_data_schema(platform: PlatformInDB = Depends(get_platform)):
-    return get_platform_module(platform.name).AuthenticationData.schema()
+    return platform_to_module[platform.name].authentication_data_model.schema()

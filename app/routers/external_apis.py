@@ -8,8 +8,8 @@ from app.dependencies.account import get_account
 from app.dependencies.auth import get_user
 from app.dependencies.database import get_db, get_read_multi_parameters_dict
 from app.dependencies.external_api import get_external_api
+from app.platforms import platform_to_module
 
-from app.platforms.commons import get_platform_module
 from app.schemas import ExternalAPI, ExternalAPICreate, User, ExternalAPIUpdate
 from app import crud
 from app.platforms.commons import DataTypeEnum
@@ -55,10 +55,10 @@ async def delete_external_api(external_api: ExternalAPI = Depends(get_external_a
     return crud.external_api.remove_obj(db, external_api)
 
 
-@router.post("/{external_api_id}/fetch_data/{data_type}/")
+@router.post("/{external_api_id}/fetch-data/{data_type}/")
 async def fetch_data(data_type: DataTypeEnum,
                      external_api: ExternalAPI = Depends(get_external_api)):
-    platform_module = get_platform_module(external_api.account.platform.name)
+    platform_module = platform_to_module[external_api.account.platform.name]
 
     if data_type not in platform_module.supported_data_types:
         raise HTTPException(
@@ -66,6 +66,6 @@ async def fetch_data(data_type: DataTypeEnum,
             detail="The data type is not available for this platform"
         )
 
-    task = external_apis_fetch_data.delay(external_api.id, data_type.value)
+    task = external_apis_fetch_data.delay(data_type.value, external_api_id=external_api.id)
 
     return {"task_id": task.task_id}

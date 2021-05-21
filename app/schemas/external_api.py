@@ -4,7 +4,6 @@ from pydantic.class_validators import validator
 
 from app.database import SessionLocal
 from app import crud
-from app.platforms.commons import get_platform_module
 
 
 class ExternalAPIBase(BaseModel):
@@ -30,13 +29,15 @@ class ExternalAPICreate(ExternalAPIBase):
 
     @validator("authentication_data")
     def valid_authentication_data(cls, v, values, **kwargs):
+        from app.platforms import platform_to_module
+
         db = SessionLocal()
 
         account = crud.account.get(db, values["account_id"])
         platform = crud.platform.get(db, account.platform_id)
-        platform_module = get_platform_module(platform.name)
+        platform_module = platform_to_module[platform.name]
 
-        platform_module.AuthenticationData.parse_raw(v)
+        platform_module.authentication_data_model.parse_raw(v)
 
         return v
 
